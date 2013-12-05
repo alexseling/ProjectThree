@@ -1,0 +1,23 @@
+PROJECT 2 - PRISON GAME
+
+CONTROLS
+Left/Right arrows: Turn
+Up arrow: Walk forward
+Down arrow: Crouch
+B: Toggle holding bazooka in firing position (Victoria can't walk forward if bazooka is ready to fire)
+T: Aim bazooka higher
+G: Aim bazooka lower
+Spacebar: Fire pie
+
+SCORING SYSTEM:
+Hit an alien with a pie: +number of centimeters away at time of hit
+Hit an alien with last pie left in bazooka: counts double
+Get slimed: -200
+Allow Alien to escape to the next room: -700
+Allow Dalek to escape to the next room: -1000
+
+ALIEN BEHAVIOR:
+Alien starts in Region 6, Dalek starts in Region 5.
+Both aliens attempt to escape to the next lowest-numbered region whenever possible if the door is open, otherwise they turn around and circle back until they hit a wall or closed door.
+Dalek spits on average once every 8 seconds throughout the game.
+Alien spits on average once every 10 seconds at the start of the game. However, if there is ever a pie fired nearby and he doesn't catch any within 3 seconds, he throws a tantrum and then spits slightly more frequently.
