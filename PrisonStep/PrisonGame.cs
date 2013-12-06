@@ -99,6 +99,9 @@ namespace PrisonStep
         private PSLineDraw lineDraw;
         public PSLineDraw LineDraw { get { return lineDraw; } }
 
+        private float scrollTarget = 0;
+        private float scroll = 0;
+
 
         /// <summary>
         /// Constructor
@@ -230,12 +233,12 @@ namespace PrisonStep
                 if (alien.FiredSpit.BS.testRayCollision(r) && dalek.FiredSpit.BeenFired)
                 {
                     alien.FiredSpit.Reset();
-                    UpdateScore("Cleared a spit", 10);
+                    UpdateScore("Cleared a spit", 100);
                 }
                 if (dalek.FiredSpit.BS.testRayCollision(r) && dalek.FiredSpit.BeenFired)
                 {
                     dalek.FiredSpit.Reset();
-                    UpdateScore("Cleared a spit", 10);
+                    UpdateScore("Cleared a spit", 100);
                 }
 
                 foreach (Pie p in flyingPies)
@@ -243,7 +246,7 @@ namespace PrisonStep
                     if (p.BS.testRayCollision(r))
                     {
                         piesToDelete.Add(p);
-                        UpdateScore("Cleaning up after yourself", 2);
+                        UpdateScore("Cleaning up after yourself", 10);
                     }
                 }
             }
@@ -337,6 +340,7 @@ namespace PrisonStep
         }
 
         public void UpdateScore(string message, int change) {
+            scrollTarget += 15;
             score += change;
             message += ": " + change;
             updateStrings.Add(message);
@@ -375,9 +379,31 @@ namespace PrisonStep
             string start = "PIES LEFT:";
             if (player.Bazooka.PiesLeft < 10) start += " ";
             spriteBatch.DrawString(scoreFont, start + player.Bazooka.PiesLeft, new Vector2(765, 10), Color.White);
-            int numMessages = 0;
-            foreach(String message in updateStrings)
-                spriteBatch.DrawString(messageFont, message, new Vector2(10, 50+15*numMessages++), Color.Red);
+            bool allIn = true;
+            foreach (double t in updateTimes)
+            {
+                if (totalElapsed - t < 400)
+                    allIn = false;
+            }
+            if (allIn == true && updateTimes.Count > 0) {
+               scroll = 0;
+               scrollTarget = 0;
+            }
+            int uncounted = 0;
+            for (int i = updateStrings.Count - 1; i >= 0; i--)
+            {
+                String message = updateStrings[i];
+                double timeIn = updateTimes[i];
+                if (scrollTarget > scroll)
+                {
+                    scroll += 30 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+                int extra = 0;
+                if (updateTimes.Count > 1) extra = (int)scroll;
+                if (totalElapsed - timeIn >= 400 || updateTimes.Count <= 1)
+                    spriteBatch.DrawString(messageFont, message, new Vector2(10, 50 + extra + 15 * (updateStrings.Count - i - uncounted - 1)), Color.Red);
+                else uncounted++;
+            }
             spriteBatch.End();
             GraphicsDevice.DepthStencilState = DepthStencilState.Default; 
             
