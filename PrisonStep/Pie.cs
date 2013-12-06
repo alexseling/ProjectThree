@@ -63,7 +63,10 @@ namespace PrisonStep
                 if (pieNum == 3) offset = 10;
                 if (pieNum == 2) offset = 20;
                 distance += addedDistance;
-                bs.Position = (Matrix.CreateTranslation(0, distance + offset, 0) * transform).Translation;
+                Vector3 spherePos = (Matrix.CreateTranslation(0, distance + offset, 0) * transform).Translation;
+                spherePos.Y += doorUp;
+                bs.Position = spherePos;
+
                 if (bs.Position.Y <= 0)
                 {
                     float deltaY = prevY - bs.Position.Y;
