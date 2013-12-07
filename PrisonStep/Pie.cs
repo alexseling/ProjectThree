@@ -25,6 +25,8 @@ namespace PrisonStep
 
             bs = new BoundingSphere();
             bs.Radius = 8;
+
+            partSys = new ParticleSystem(game, new Vector3(0, 0, 0));
         }
 
         /// <summary>
@@ -66,6 +68,7 @@ namespace PrisonStep
                 Vector3 spherePos = (Matrix.CreateTranslation(0, distance + offset, 0) * transform).Translation;
                 spherePos.Y += doorUp;
                 bs.Position = spherePos;
+                partSys.Update(gameTime, bs.Position);
 
                 if (bs.Position.Y <= 0)
                 {
@@ -141,6 +144,9 @@ namespace PrisonStep
             if (hitAlien == true)
                 distance = 0;
             DrawModel(graphics, model, this.transform);
+
+            if (beenFired == true && speed == 0)
+                partSys.Draw(graphics, gameTime);
         }
 
         private void DrawModel(GraphicsDeviceManager graphics, Model model, Matrix world)
@@ -207,6 +213,7 @@ namespace PrisonStep
         private int oppositeRegion = 2;
         private float percentOpen = 0;
         private bool beenFired = false;
+        private ParticleSystem partSys;
         private BoundingSphere bs;
         public BoundingSphere BS { get { return bs; } }
         private float doorUp = 0;

@@ -16,7 +16,8 @@ namespace PrisonStep
         private Matrix transform;
 
         private Vector3 velocity;
-        private Vector3 position;
+        private Vector3 objectPos; // Center of particle system(which changes when pies/spit move)
+        private Vector3 position; // Relative to center of particle system
         private Vector3 acceleration;
         private float lifetime;
         private float age;
@@ -42,6 +43,7 @@ namespace PrisonStep
             this.angularVelocity = rotationSpeed;
             this.age = 0.0f;
             this.orientation = orientation;
+            this.objectPos = new Vector3(0, 0, 0);
         }
 
         /// <summary>
@@ -61,7 +63,7 @@ namespace PrisonStep
         /// to the current game time.
         /// </summary>
         /// <param name="gameTime"></param>
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Vector3 particleSystemLocation)
         {
             System.Diagnostics.Trace.WriteLine("Particle.Update() called");
 
@@ -75,6 +77,8 @@ namespace PrisonStep
             orientation += angularVelocity * delta;
             // Update age
             age += delta;
+            // Update system's position
+            objectPos = particleSystemLocation;
         }
 
         /// <summary>

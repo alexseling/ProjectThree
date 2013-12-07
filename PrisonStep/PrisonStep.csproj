@@ -122,6 +122,8 @@
     <Compile Include="Alien.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Particle.cs" />
+    <Compile Include="ParticleSystem.cs" />
     <Compile Include="Spit.cs" />
     <Compile Include="Dalek.cs" />
     <Compile Include="Pie.cs" />
