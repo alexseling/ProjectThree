@@ -4,8 +4,8 @@ Base Project: Raymond Heldt
 
 Group A Requirement - Particle System
 
-	There is a trail of smoke behind pie and spit projectiles.
-	When projectiles collide a puff of smoke occurs.
+	There is a trail of smoke behind pie projectiles.
+	When pie projectiles hit a wall a puff of smoke occurs.
 
 	Raymond Heldt
 	Joshua Geschwendt

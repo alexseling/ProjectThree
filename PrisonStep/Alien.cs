@@ -29,7 +29,7 @@ namespace PrisonStep
         private Spit spit;
         public Spit FiredSpit { get { return spit; } }
 
-        private float spitFrequency = 1; // number of seconds until they spit, on average;
+        private float spitFrequency = 5; // number of seconds until they spit, on average;
 
         private int targetDoor = 5;
         private float targetRotation = 0;

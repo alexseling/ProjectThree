@@ -10,8 +10,7 @@ namespace PrisonStep
 {
     public class Spit
     {
-        private bool isEffectStarted = false;     // <------ Added
-        private bool isTrailing = false;          // <------ Added
+        //private bool isTrailing = false;          // <------ Added
 
         public Spit(PrisonGame game, Matrix alienTransform, float spitHeight)
         {
@@ -23,8 +22,8 @@ namespace PrisonStep
             height = spitHeight;
             transform.M42 = height;
 
-            partSys = new ParticleSystem(2);         // <---------- Added
-            smokeTrail = new ParticleSystem(1);      // <---------- Added
+            //partSys = new ParticleSystem(2);         // <---------- Added
+            //smokeTrail = new ParticleSystem(1);      // <---------- Added
             
             
         }
@@ -38,8 +37,8 @@ namespace PrisonStep
         {
             model = content.Load<Model>("Spit");
 
-            partSys.LoadContent(game.Content);      // <---------- Added
-            smokeTrail.LoadContent(game.Content);   // <---------- Added  
+            //partSys.LoadContent(game.Content);      // <---------- Added
+            //smokeTrail.LoadContent(game.Content);   // <---------- Added  
         }
 
         public void Fire(Matrix alienTransform)
@@ -58,8 +57,8 @@ namespace PrisonStep
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime, Matrix alienT)
         {
-            partSys.Update((float)gameTime.ElapsedGameTime.TotalSeconds);     // <----- Added
-            smokeTrail.Update((float)gameTime.ElapsedGameTime.TotalSeconds);  // <----- Added
+            //partSys.Update((float)gameTime.ElapsedGameTime.TotalSeconds);     // <----- Added
+            //smokeTrail.Update((float)gameTime.ElapsedGameTime.TotalSeconds);  // <----- Added
 
             if (beenFired == false)
                 return;
@@ -89,13 +88,13 @@ namespace PrisonStep
             }
 
 
-            if (beenFired == true && !isTrailing)         // <---------- Added
-            {
-                smokeTrail.AddParticles(bs.Position);
-                isTrailing = true;
-            }
-            else if (beenFired == true && speed != 0)
-                smokeTrail.MoveParticles(deltaMovement);
+            //if (beenFired == true && !isTrailing)         // <---------- Added
+            //{
+            //    smokeTrail.AddParticles(bs.Position);
+            //    isTrailing = true;
+            //}
+            //else if (beenFired == true && speed != 0)
+            //    smokeTrail.MoveParticles(deltaMovement);
         }
 
         public void Reset()
@@ -105,7 +104,7 @@ namespace PrisonStep
             distance = 0;
             transform = alienTransform;
 
-            partSys.AddParticles(bs.Position);   // <---- added
+            //partSys.AddParticles(bs.Position);   // <---- added
         }
 
         /// <summary>
@@ -123,8 +122,8 @@ namespace PrisonStep
             if (beenFired == true)
                 DrawModel(graphics, model, this.transform);
 
-            partSys.Draw(graphics.GraphicsDevice, game.Camera);     // <----- added
-            smokeTrail.Draw(graphics.GraphicsDevice, game.Camera);  // <----- added
+            //partSys.Draw(graphics.GraphicsDevice, game.Camera);     // <----- added
+            //smokeTrail.Draw(graphics.GraphicsDevice, game.Camera);  // <----- added
         }
 
         private void DrawModel(GraphicsDeviceManager graphics, Model model, Matrix world)
