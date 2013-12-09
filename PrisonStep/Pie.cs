@@ -11,6 +11,7 @@ namespace PrisonStep
     public class Pie
     {
         private bool isEffectStarted = false;     // <------ Added
+        private bool isTrailing = false;     // <------ Added
 
         public Pie(Bazooka bazooka, PrisonGame game, int pieNum)
         {
@@ -30,6 +31,8 @@ namespace PrisonStep
 
             partSys = new ParticleSystem(2);      // <---------- Added
             partSys.LoadContent(game.Content);
+            smokeTrail = new ParticleSystem(1);      // <---------- Added
+            smokeTrail.LoadContent(game.Content);
         }
 
         /// <summary>
@@ -70,8 +73,11 @@ namespace PrisonStep
                 distance += addedDistance;
                 Vector3 spherePos = (Matrix.CreateTranslation(0, distance + offset, 0) * transform).Translation;
                 spherePos.Y += doorUp;
+                Vector3 prevPos = bs.Position;
                 bs.Position = spherePos;
+                deltaMovement = bs.Position - prevPos;
                 partSys.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                smokeTrail.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
                 if (bs.Position.Y <= 0)
                 {
@@ -114,6 +120,13 @@ namespace PrisonStep
                 partSys.AddParticles(bs.Position);
                 isEffectStarted = true;
             }
+            else if (beenFired == true && !isTrailing)
+            {
+                smokeTrail.AddParticles(bs.Position);
+                isTrailing = true;
+            }
+            else if (beenFired == true && speed != 0)
+                smokeTrail.MoveParticles(deltaMovement);
 
         }
         
@@ -157,6 +170,8 @@ namespace PrisonStep
             DrawModel(graphics, model, this.transform);
 
             partSys.Draw(graphics.GraphicsDevice, game.Camera);
+            if (beenFired == true)
+            smokeTrail.Draw(graphics.GraphicsDevice, game.Camera);
         }
 
         private void DrawModel(GraphicsDeviceManager graphics, Model model, Matrix world)
@@ -224,6 +239,8 @@ namespace PrisonStep
         private float percentOpen = 0;
         private bool beenFired = false;
         private ParticleSystem partSys;
+        private ParticleSystem smokeTrail;
+        private Vector3 deltaMovement = new Vector3(0, 0, 0);
         private BoundingSphere bs;
         public BoundingSphere BS { get { return bs; } }
         private float doorUp = 0;

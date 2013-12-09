@@ -221,8 +221,14 @@ namespace PrisonStep
             minScale = 20.0f;
             maxScale = 40.0f;
 
-            minNumParticles = 10;
+            minNumParticles = 35;
             maxNumParticles = 100;
+
+            if (howManyEffects == 1) // Smoke Trail - lower the number of particles
+            {
+                minNumParticles = 6;
+                maxNumParticles = 10;
+            }
 
             // rotate slowly, we want a fairly relaxed effect
             minRotationSpeed = -MathHelper.PiOver4 / 2.0f;
@@ -335,6 +341,12 @@ namespace PrisonStep
             p.Acceleration = p.Acceleration + new Vector3(ParticleSystem.RandomBetween(2, 8), 0, 0);
         }
 
+        public void MoveParticles(Vector3 delta)
+        {
+            foreach (Particle p in liveParticles)
+                p.Position = p.Position + delta;
+        }
+
 
         // a random number generator that the whole system can share.
         private static Random random = new Random();
@@ -359,9 +371,15 @@ namespace PrisonStep
         /// </summary>
         private Vector3 PickParticleDirection()
         {
+            float up = 1;
             float r = 0.1f;
+            if (howManyEffects == 1)
+            {
+                up = 0.02f;
+                r = 0.01f;
+            }
 
-            Vector3 v = new Vector3(RandomBetween(-r, r), 1, RandomBetween(-r, r));
+            Vector3 v = new Vector3(RandomBetween(-r, r), up, RandomBetween(-r, r));
             v.Normalize();
 
             return v;
