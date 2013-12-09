@@ -11,7 +11,7 @@ namespace PrisonStep
     public class Pie
     {
         private bool isEffectStarted = false;     // <------ Added
-        private bool isTrailing = false;     // <------ Added
+        private bool isTrailing = false;          // <------ Added
 
         public Pie(Bazooka bazooka, PrisonGame game, int pieNum)
         {
@@ -63,6 +63,10 @@ namespace PrisonStep
             float prevDistance = distance; // Used in case of collision later
             float prevY = bs.Position.Y;
             float addedDistance = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            partSys.Update((float)gameTime.ElapsedGameTime.TotalSeconds);     // <----- Added
+            smokeTrail.Update((float)gameTime.ElapsedGameTime.TotalSeconds);  // <----- Added
+
             if (beenFired == false)
                 distance += addedDistance;
             else
@@ -76,8 +80,7 @@ namespace PrisonStep
                 Vector3 prevPos = bs.Position;
                 bs.Position = spherePos;
                 deltaMovement = bs.Position - prevPos;
-                partSys.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-                smokeTrail.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+
 
                 if (bs.Position.Y <= 0)
                 {
@@ -170,8 +173,9 @@ namespace PrisonStep
             DrawModel(graphics, model, this.transform);
 
             partSys.Draw(graphics.GraphicsDevice, game.Camera);
+            
             if (beenFired == true)
-            smokeTrail.Draw(graphics.GraphicsDevice, game.Camera);
+                smokeTrail.Draw(graphics.GraphicsDevice, game.Camera);
         }
 
         private void DrawModel(GraphicsDeviceManager graphics, Model model, Matrix world)
