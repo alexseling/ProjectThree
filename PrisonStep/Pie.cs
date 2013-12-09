@@ -10,6 +10,8 @@ namespace PrisonStep
 {
     public class Pie
     {
+        private bool isEffectStarted = false;     // <------ Added
+
         public Pie(Bazooka bazooka, PrisonGame game, int pieNum)
         {
             this.bazooka = bazooka;
@@ -26,7 +28,8 @@ namespace PrisonStep
             bs = new BoundingSphere();
             bs.Radius = 8;
 
-            partSys = new ParticleSystem(game, new Vector3(0, 0, 0));
+            partSys = new ParticleSystem(2);      // <---------- Added
+            partSys.LoadContent(game.Content);
         }
 
         /// <summary>
@@ -68,7 +71,7 @@ namespace PrisonStep
                 Vector3 spherePos = (Matrix.CreateTranslation(0, distance + offset, 0) * transform).Translation;
                 spherePos.Y += doorUp;
                 bs.Position = spherePos;
-                partSys.Update(gameTime, bs.Position);
+                partSys.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
                 if (bs.Position.Y <= 0)
                 {
@@ -105,7 +108,15 @@ namespace PrisonStep
                     }
                 }
             }
+
+            if (beenFired == true && speed == 0 && !isEffectStarted)            // <---------- Added
+            {
+                partSys.AddParticles(bs.Position);
+                isEffectStarted = true;
+            }
+
         }
+        
 
         public void AddDoorMovement(float deltaY)
         {
@@ -145,8 +156,7 @@ namespace PrisonStep
                 distance = 0;
             DrawModel(graphics, model, this.transform);
 
-            if (beenFired == true && speed == 0)
-                partSys.Draw(graphics, gameTime);
+            partSys.Draw(graphics.GraphicsDevice, game.Camera);
         }
 
         private void DrawModel(GraphicsDeviceManager graphics, Model model, Matrix world)

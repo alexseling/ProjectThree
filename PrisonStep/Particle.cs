@@ -8,16 +8,10 @@ using Microsoft.Xna.Framework.Content;
 
 namespace PrisonStep
 {
-    class Particle
+    public class Particle
     {
-        private PrisonGame game;
-        private Model model;
-        public Model Model { get { return model; } set { model = value; } }
-        private Matrix transform;
-
+        private Vector3 position;
         private Vector3 velocity;
-        private Vector3 objectPos; // Center of particle system(which changes when pies/spit move)
-        private Vector3 position; // Relative to center of particle system
         private Vector3 acceleration;
         private float lifetime;
         private float age;
@@ -25,77 +19,93 @@ namespace PrisonStep
         private float orientation;
         private float angularVelocity;
 
-        public Particle(PrisonGame game, Vector3 positionOfSystem)
-        {
-            System.Diagnostics.Trace.WriteLine("Particle.Particle() called");
+        /// <summary>
+        /// Position of the particle in space
+        /// </summary>
+        public Vector3 Position { get { return position; } set { position = value; } }
 
-            this.game = game;
-        }
+        /// <summary>
+        /// 3D particle velocity
+        /// </summary>
+        public Vector3 Velocity { get { return velocity; } set { velocity = value; } }
 
-        public void Initialize(Vector3 position, Vector3 velocity, Vector3 acceleration, float lifetime, float scale, float rotationSpeed, float orientation)
+        /// <summary>
+        /// 3D particle acceleration
+        /// </summary>
+        public Vector3 Acceleration { get { return acceleration; } set { acceleration = value; } }
+
+        /// <summary>
+        /// How long this particle will live
+        /// </summary>
+        public float Lifetime { get { return lifetime; } set { lifetime = value; } }
+
+        /// <summary>
+        /// How long as this particle been in existence?
+        /// </summary>
+        public float Age { get { return age; } set { age = value; } }
+
+        /// <summary>
+        /// The scale of this particle
+        /// </summary>
+        public float Scale { get { return scale; } set { scale = value; } }
+
+        /// <summary>
+        /// Orientation of the particle in radians
+        /// </summary>
+        public float Orientation { get { return orientation; } set { orientation = value; } }
+
+        /// <summary>
+        /// How fast does it rotate?
+        /// </summary>
+        public float AngularVelocity { get { return angularVelocity; } set { angularVelocity = value; } }
+
+        /// <summary>
+        /// Is this particle still alive?  It's no longer alive once it is older than 
+        /// it's lifetime.
+        /// </summary>
+        public bool Active { get { return Age < Lifetime; } }
+
+        /// <summary>
+        /// Initialize is called by the particle when to set up a particle and prepare 
+        /// it for use.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="velocity"></param>
+        /// <param name="acceleration"></param>
+        /// <param name="lifetime"></param>
+        /// <param name="scale"></param>
+        /// <param name="rotationSpeed"></param>
+        public void Initialize(Vector3 position, Vector3 velocity, Vector3 acceleration,
+                               float lifetime, float scale, float rotationSpeed, float orientation)
         {
-            // set the values to the requested values -- This could be rewritten as some base value + a randomly generated offset
-            this.position = position;
-            this.velocity = velocity;
-            this.acceleration = acceleration;
-            this.lifetime = lifetime;
-            this.scale = scale;
-            this.angularVelocity = rotationSpeed;
-            this.age = 0.0f;
-            this.orientation = orientation;
-            this.objectPos = new Vector3(0, 0, 0);
+            // set the values to the requested values
+            this.Position = position;
+            this.Velocity = velocity;
+            this.Acceleration = acceleration;
+            this.Lifetime = lifetime;
+            this.Scale = scale;
+            this.AngularVelocity = rotationSpeed;
+            this.Age = 0.0f;
+            this.Orientation = orientation;
         }
 
         /// <summary>
-        /// This function is called to load content into this component
-        /// of our game.
+        /// Update for the particle.  Does an Euler step.
         /// </summary>
-        /// <param name="content">The content manager to load from.</param>
-        public void LoadContent(ContentManager content)
+        /// <param name="delta">Time step</param>
+        public void Update(float delta)
         {
-            System.Diagnostics.Trace.WriteLine("Particle.LoadContent() called");
+            // Update velocity
+            Velocity += Acceleration * delta;
 
-            //model = content.Load<Model>("Particle");  <------ Need a particle model
-        }
+            // Update position
+            Position += Velocity * delta;
 
-        /// <summary>
-        /// This function is called to update this component of our game
-        /// to the current game time.
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public void Update(GameTime gameTime, Vector3 particleSystemLocation)
-        {
-            System.Diagnostics.Trace.WriteLine("Particle.Update() called");
+            // Update orientation
+            Orientation += AngularVelocity * delta;
 
-            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            // Update velocity
-            velocity += acceleration * delta;
-            // Update position
-            position += velocity * delta;
-            // Update orientation
-            orientation += angularVelocity * delta;
-            // Update age
-            age += delta;
-            // Update system's position
-            objectPos = particleSystemLocation;
-        }
-
-        /// <summary>
-        /// This function is called to draw this game component.
-        /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="gameTime"></param>
-        public void Draw(GraphicsDeviceManager graphics, GameTime gameTime)
-        {
-            System.Diagnostics.Trace.WriteLine("Particle.Draw() called");
-
-            DrawModel(graphics, model, this.transform);
-        }
-
-        private void DrawModel(GraphicsDeviceManager graphics, Model model, Matrix world)
-        {
-            System.Diagnostics.Trace.WriteLine("Particle.DrawModel() called");
+            // Update age
+            Age += delta;
         }
     }
 }
